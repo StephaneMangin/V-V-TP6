@@ -1,6 +1,7 @@
 package vv.spoon.processor;
 
 import spoon.processing.AbstractProcessor;
+import spoon.reflect.code.CtCodeSnippetStatement;
 import spoon.reflect.code.CtExpression;
 import spoon.reflect.code.CtInvocation;
 import spoon.reflect.cu.CompilationUnit;
@@ -30,20 +31,23 @@ public class LogProcessor extends AbstractProcessor<CtInvocation>  {
 
     @Override
     public void process(CtInvocation element) {
-        SourcePosition sp = element.getPosition();
-        CompilationUnit compileUnit = sp.getCompilationUnit();
+//        SourcePosition sp = element.getPosition();
+//        CompilationUnit compileUnit = sp.getCompilationUnit();
 
-        //add /** before the invocation
-        SourceCodeFragment before = new SourceCodeFragment(compileUnit.beginOfLineIndex(sp.getSourceStart()), "/**", 0);
-        compileUnit.addSourceCodeFragment(before);
+//        //add /** before the invocation
+//        SourceCodeFragment before = new SourceCodeFragment(compileUnit.beginOfLineIndex(sp.getSourceStart()), "/**", 0);
+//        compileUnit.addSourceCodeFragment(before);
 
         //add **/ vv.spoon.logger.LogWriter.out( argument, newline, error); after the invocation
         Object argument = element.getArguments().get(0);
-        String snippet = "**/\n\t\tvv.spoon.logger.LogWriter.out(" + argument
-                + "," + isError(element.getTarget()) + ");\n";
+        String snippet = "vv.spoon.logger.LogWriter.out(" + argument
+                + "," + isError(element.getTarget()) + ")";
 
-        SourceCodeFragment after = new SourceCodeFragment(compileUnit.nextLineIndex(sp.getSourceEnd()), snippet, 0);
-        compileUnit.addSourceCodeFragment(after);
+//        SourceCodeFragment after = new SourceCodeFragment(compileUnit.nextLineIndex(sp.getSourceEnd()), snippet, 0);
+//        compileUnit.addSourceCodeFragment(after);
+
+        CtCodeSnippetStatement snippetStmt = element.getFactory().Code().createCodeSnippetStatement(snippet);
+        element.replace(snippetStmt);
     }
 
     //check in the output stream is error stream or out stream

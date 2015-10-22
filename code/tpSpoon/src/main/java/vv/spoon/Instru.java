@@ -7,14 +7,14 @@ import spoon.processing.ProcessingManager;
 import spoon.processing.Processor;
 import spoon.reflect.factory.Factory;
 import spoon.reflect.factory.FactoryImpl;
-import spoon.reflect.visitor.FragmentDrivenJavaPrettyPrinter;
+import spoon.reflect.visitor.DefaultJavaPrettyPrinter;
 import spoon.support.DefaultCoreFactory;
+import spoon.support.JavaOutputProcessor;
 import spoon.support.QueueProcessingManager;
 import spoon.support.StandardEnvironment;
 import spoon.support.compiler.jdt.JDTBasedSpoonCompiler;
 import vv.spoon.logger.LogWriter;
 import vv.spoon.logger.ShutdownHookLog;
-import vv.spoon.processor.SimpleJavaOutputProcessor;
 
 
 import java.io.File;
@@ -47,11 +47,12 @@ public class Instru {
         //write the intrumentalize java code into the output directory
         Environment env = factory.getEnvironment();
         env.useSourceCodeFragments(true);
-        applyProcessor(factory, new SimpleJavaOutputProcessor(new File(out), new FragmentDrivenJavaPrettyPrinter(env)));
+        applyProcessor(factory, new JavaOutputProcessor(new File(out), new DefaultJavaPrettyPrinter(env)));
 
         //copy LogWriter and ShutdownHookLog into the output directory
         copyLoggerFile(outputDirectory, srcDirectory);
     }
+
 
 
     protected void initOutputDirectory() throws IOException {
